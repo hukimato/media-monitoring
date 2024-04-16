@@ -1,0 +1,8 @@
+/.vscode
+/.env
+.idea
+/www/vendor/
+/www/.phpunit.cache
+/www/public/reports
+/docker/postgresql/db-data/pgdata
+/docker/logs

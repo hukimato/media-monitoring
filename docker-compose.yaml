@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+    nginx:
+        build:
+            context: ./docker/nginx
+            dockerfile: Dockerfile
+        image: "hw15/nginx"
+        container_name: "hw15-nginx"
+        ports:
+            - "80:80"
+        volumes:
+            - ./www:/www/mysite.local
+            - ./docker/logs/nginx:/var/log/nginx/
+        networks:
+            - app-network
+        depends_on:
+            - app
+
+    app:
+        build:
+            context: ./docker/php-fpm
+            dockerfile: Dockerfile
+        image: "hw15/fpm"
+        container_name: "hw15-www"
+        env_file:
+            - .env
+        volumes:
+            - ./www:/www/mysite.local
+            - ./docker/logs/php.log:/var/log/fpm-php.www.log
+        networks:
+            - app-network
+
+    postgresql:
+        image: postgres:14.7-alpine
+        container_name: "hw15-postgresql"
+        environment:
+            POSTGRES_USER: hukimato
+            POSTGRES_PASSWORD: hukimato
+            POSTGRES_DB: hukimato
+            PGDATA: "/var/lib/postgresql/data/pgdata"
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./docker/postgresql/db-data:/var/lib/postgresql/data
+        networks:
+            - app-network
+
+networks:
+    app-network:
+        driver: bridge
