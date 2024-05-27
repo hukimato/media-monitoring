@@ -17,6 +17,7 @@ class AddNewPostController extends Controller
 
     public function index()
     {
-        return ($this->useCase)();
+        $data = ($this->useCase)();
+        return response()->json($data);
     }
 }

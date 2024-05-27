@@ -8,6 +8,7 @@ use Domain\Entity\Post;
 use Domain\Storage\PostStorageInterface;
 use Domain\ValueObject\Title;
 use Domain\ValueObject\Url;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Infrastructure\Model\PostModel;
 
 class PostStorage implements PostStorageInterface
@@ -21,7 +22,11 @@ class PostStorage implements PostStorageInterface
             'sourceUrl' => $post->getSourceUrl(),
         ]);
 
-        $postEntity->save();
+        try {
+            $postEntity->save();
+        } catch (UniqueConstraintViolationException $e) {
+            $postEntity = PostModel::where('sourceUrl', $post->getSourceUrl())->first();
+        }
 
         $reflectionProperty = new \ReflectionProperty(Post::class, 'id');
         $reflectionProperty->setAccessible(true);
@@ -29,10 +34,12 @@ class PostStorage implements PostStorageInterface
         return $post;
     }
 
-    public function findById(int $id): Post
+    public function findById(int $id): ?Post
     {
         $model = PostModel::find($id);
-        $post = new Post($model->dateTime, new Url($model->sourceUrl), $model->title);
+        if (!$model)
+            return null;
+        $post = new Post($model->dateTime, new Url($model->sourceUrl), new Title($model->title));
 
         $reflectionProperty = new \ReflectionProperty(Post::class, 'id');
         $reflectionProperty->setAccessible(true);

@@ -27,7 +27,9 @@ class AddNewPostUseCase
         $post = new Post(
             new DateTime(date('Y-m-d H:i:s')),
             $this->addNewPostRequest->url,
-            new Title($this->httpClient->getPageTitle($this->addNewPostRequest->url)),
+            new Title(
+                $this->httpClient->getPageTitle($this->addNewPostRequest->url)->title
+            ),
         );
 
         $post = $this->postRepository->save($post);

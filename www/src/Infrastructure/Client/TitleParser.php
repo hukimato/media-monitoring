@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Infrastructure\Client;
 
+use Application\TitleParser\TitleDTO;
 use Application\TitleParser\TitleParserInterface;
 use Domain\ValueObject\Url;
 use Illuminate\Support\Facades\Http;
 
 class TitleParser implements TitleParserInterface
 {
-    public function getPageTitle(Url $url): string
+    public function getPageTitle(Url $url): TitleDTO
     {
         $response = Http::get($url->getValue());
         $body = $response->body();
@@ -22,6 +23,6 @@ class TitleParser implements TitleParserInterface
         // Clean up title: remove EOL's and excessive whitespace.
         $title = preg_replace('/\s+/', ' ', $title_matches[1]);
         $title = trim($title);
-        return $title;
+        return new TitleDTO($title);
     }
 }

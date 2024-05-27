@@ -6,5 +6,5 @@ namespace Application\ReportGenerator;
 
 interface ReportGeneratorInterface
 {
-    public static function generateReportContent(array $posts): string;
+    public static function generateReportContent(array $posts): ReportDTO;
 }

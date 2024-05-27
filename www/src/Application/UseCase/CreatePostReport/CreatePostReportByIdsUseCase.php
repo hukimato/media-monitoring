@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Application\UseCase\CreatePostReport;
 
-use Application\ReportGenerator\ReportGenerator;
 use Application\ReportGenerator\ReportGeneratorInterface;
-use Application\ReportStorageInterface;
+use Application\ReportStorage\ReportStorageInterface;
 use Domain\Storage\PostStorageInterface;
 
 class CreatePostReportByIdsUseCase
 {
     public function __construct(
-        private PostStorageInterface   $postStorage,
-        private ReportStorageInterface $reportStorage,
-        private ReportGeneratorInterface $reportGenerator,
+        private PostStorageInterface         $postStorage,
+        private ReportStorageInterface       $reportStorage,
+        private ReportGeneratorInterface     $reportGenerator,
         private CreatePostReportByIdsRequest $request,
     )
     {
@@ -26,11 +25,14 @@ class CreatePostReportByIdsUseCase
 
         $posts = [];
         foreach ($postIds as $postId) {
-            $posts[] = $this->postStorage->findById($postId);
+            $post = $this->postStorage->findById($postId);
+            if (!$post)
+                continue;
+            $posts[] = $post;
         }
 
-        $reportContent = $this->reportGenerator::generateReportContent($posts);
-        $reportUrl = $this->reportStorage->save($reportContent);
+        $reportDto = $this->reportGenerator::generateReportContent($posts);
+        $reportUrl = $this->reportStorage->save($reportDto->content);
         return new CreatePostReportByIdsResponse($reportUrl);
     }
 

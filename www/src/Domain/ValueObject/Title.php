@@ -16,7 +16,7 @@ class Title
 
     protected function assertValidTitle(string $value): void
     {
-        if (!ctype_upper($value[0])) {
+        if (mb_strlen($value) > 150) {
             throw new \InvalidArgumentException("Invalid title '$value'");
         }
     }

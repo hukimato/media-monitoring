@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Infrastructure\Storage;
 
-use Application\ReportStorageInterface;
+use Application\ReportStorage\ReportStorageInterface;
 use Domain\ValueObject\Url;
 use Illuminate\Support\Facades\Storage;
 

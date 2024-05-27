@@ -7,7 +7,7 @@ namespace Application\ReportGenerator;
 class ReportGenerator implements ReportGeneratorInterface
 {
 
-    public static function generateReportContent(array $posts): string
+    public static function generateReportContent(array $posts): ReportDTO
     {
         $reportContent = <<<HTML
 <!DOCTYPE html>
@@ -23,6 +23,6 @@ HTML;
         }
         $reportContent .= "</ul></body></html>";
 
-        return $reportContent;
+        return new ReportDTO($reportContent);
     }
 }

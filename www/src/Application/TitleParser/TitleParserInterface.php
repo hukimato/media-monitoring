@@ -8,5 +8,5 @@ use Domain\ValueObject\Url;
 
 interface TitleParserInterface
 {
-    public function getPageTitle(Url $url): string;
+    public function getPageTitle(Url $url): TitleDTO;
 }

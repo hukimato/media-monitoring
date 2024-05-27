@@ -18,6 +18,7 @@ class CreatePostReportByIdsController extends Controller
     public function index()
     {
         $method = $this->useCase;
-        return $method();
+        $data = $method();
+        return redirect($data->reportUrl->getValue());
     }
 }
